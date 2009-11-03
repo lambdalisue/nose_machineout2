@@ -1,0 +1,10 @@
+machineout.py
+setup.py
+test_machineout.py
+nose_machineout.egg-info/PKG-INFO
+nose_machineout.egg-info/SOURCES.txt
+nose_machineout.egg-info/dependency_links.txt
+nose_machineout.egg-info/entry_points.txt
+nose_machineout.egg-info/not-zip-safe
+nose_machineout.egg-info/requires.txt
+nose_machineout.egg-info/top_level.txt

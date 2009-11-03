@@ -1,0 +1,3 @@
+[nose.plugins]
+machineout = machineout:NoseMachineReadableOutput
+
