@@ -8,7 +8,6 @@ It is intended to be use to integrate nose with your IDE such as Vim.
 """
 
 import re
-import os
 import os.path
 import traceback
 from nose.plugins import Plugin
@@ -26,6 +25,8 @@ class dummystream:
     def write(self, *arg):
         pass
     def writeln(self, *arg):
+        pass
+    def flush(self):
         pass
 
 def is_doctest_traceback(fname):
@@ -68,7 +69,7 @@ class NoseMachineReadableOutput(Plugin):
     def addDeprecated(self, test):
         pass
 
-    def addError(self, test, err, capt):
+    def addError(self, test, err):
         self.addFormatted('error', err)
 
     def addFormatted(self, etype, err):
@@ -109,11 +110,11 @@ class NoseMachineReadableOutput(Plugin):
             return fname[len(self.basepath)+1:]
         return fname
 
-    def addFailure(self, test, err, capt, tb_info):
+    def addFailure(self, test, err):
         self.addFormatted('fail', err)
 
     def setOutputStream(self, stream):
         # grab for own use
-        self.stream = stream        
+        self.stream = stream
         # return dummy stream to supress normal output
         return dummystream()
