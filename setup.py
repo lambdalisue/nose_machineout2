@@ -11,14 +11,14 @@ Changes output of the nose testing tool into format easily parsable by machine."
     url="http://maxischenko.in.ua/blog/entries/109/nose-vim-integration",
     download_url="http://cheeseshop.python.org/pypi/nose_machineout/0.1",
     install_requires = [
-        "nose>=0.9",
+        "nose>=0.10",
     ],
     scripts = [],
     license="BSD",
     zip_safe=False,
     py_modules=['machineout', 'test_machineout'],
     entry_points = {
-        'nose.plugins': ['machineout = machineout:NoseMachineReadableOutput'],
+        'nose.plugins.0.10': ['machineout = machineout:NoseMachineReadableOutput'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
