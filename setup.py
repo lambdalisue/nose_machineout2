@@ -1,15 +1,20 @@
-#from distutils import setup
+#!/usr/bin/env python
+"""
+Changes output of the nose testing tool into format easily parsable
+by a machine.
+
+Originally written by Max Ischenko.
+"""
+
 from setuptools import setup
 
 setup(
     name="nose_machineout",
     version="0.2",
-    description="""\
-Changes output of the nose testing tool into format easily parsable by machine.""",
-    author="Max Ischenko",
-    author_email="ischenko@gmail.com",
-    url="http://maxischenko.in.ua/blog/entries/109/nose-vim-integration",
-    download_url="http://cheeseshop.python.org/pypi/nose_machineout/0.1",
+    description=__doc__,
+    author="Mike Crute",
+    author_email="mcrute@gmail.com",
+    url="http://bitbucket.org/mcrute/nose_machineout",
     install_requires = [
         "nose>=0.10",
     ],
@@ -31,4 +36,3 @@ Changes output of the nose testing tool into format easily parsable by machine."
     ],
     keywords='test unittest nose',
     test_suite = 'nose.collector')
-
