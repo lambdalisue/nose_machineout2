@@ -14,16 +14,16 @@ setup(
     description=__doc__,
     author="Mike Crute",
     author_email="mcrute@gmail.com",
-    url="http://bitbucket.org/mcrute/nose_machineout",
+    url="http://nose-machineout.googlecode.com",
     install_requires = [
         "nose>=0.10",
     ],
-    scripts = [],
     license="BSD",
-    zip_safe=False,
     py_modules=['machineout', 'test_machineout'],
     entry_points = {
-        'nose.plugins.0.10': ['machineout = machineout:NoseMachineReadableOutput'],
+        'nose.plugins.0.10': [
+            'machineout = machineout:NoseMachineReadableOutput'
+        ],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
