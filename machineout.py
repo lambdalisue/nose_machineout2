@@ -1,10 +1,6 @@
-
 """
 Formats nose output into format easily parsable by machine.
-
 It is intended to be use to integrate nose with your IDE such as Vim.
-
-@author: Max Ischenko <ischenko@gmail.com>
 """
 
 import re
@@ -12,7 +8,9 @@ import os.path
 import traceback
 from nose.plugins import Plugin
 
+
 __all__ = ['NoseMachineReadableOutput']
+
 
 try:
     import doctest
@@ -21,24 +19,28 @@ try:
 except ImportError:
     doctest_fname = None
 
+
 class dummystream:
+
     def write(self, *arg):
         pass
+
     def writeln(self, *arg):
         pass
+
     def flush(self):
         pass
+
 
 def is_doctest_traceback(fname):
     return fname == doctest_fname
 
+
 class PluginError(Exception):
-    def __repr__(self):
-        s = super(PluginError, self).__repr__()
-        return s + "\nReport bugs to ischenko@gmail.com."
+    pass
+
 
 class NoseMachineReadableOutput(Plugin):
-
     """
     Output errors and failures in a machine-readable way.
     """
@@ -104,26 +106,26 @@ class NoseMachineReadableOutput(Plugin):
             lines = traceback.format_exception_only(exctype, value)
             lines = [line.strip('\n') for line in lines]
             msg0 = lines[0]
+
         fname = self.format_testfname(fname)
         prefix = "%s:%d" % (fname, lineno)
         self.stream.writeln("%s: In %s" % (fname, funname))
         self.stream.writeln("%s: %s: %s" % (prefix, etype, msg0))
+
         if len(lines) > 1:
             pad = ' '*(len(etype)+1)
             for line in lines[1:]:
                 self.stream.writeln("%s: %s %s" % (prefix, pad, line))
 
     def format_testfname(self, fname):
-        "Strips common path segments if any."
         if fname.startswith(self.basepath):
             return fname[len(self.basepath)+1:]
+
         return fname
 
     def addFailure(self, test, err):
         self.addFormatted('fail', err)
 
     def setOutputStream(self, stream):
-        # grab for own use
         self.stream = stream
-        # return dummy stream to supress normal output
         return dummystream()
