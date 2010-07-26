@@ -4,14 +4,12 @@ It is intended to be use to integrate nose with your IDE such as Vim.
 """
 
 import re
+import os
 import traceback
 from nose.plugins import Plugin
 
 
-__all__ = ['NoseMachineReadableOutput']
-
-
-class dummystream:
+class DummyStream:
 
     def write(self, *arg):
         pass
@@ -30,34 +28,31 @@ class NoseMachineReadableOutput(Plugin):
 
     name = 'machineout'
 
-    doctest_failure_re = re.compile('File "([^"]+)", line (\d+), in ([^\n]+)\n(.+)',
+    doctest_failure_re = re.compile(
+            'File "([^"]+)", line (\d+), in ([^\n]+)\n(.+)',
             re.DOTALL)
 
     def __init__(self):
         super(NoseMachineReadableOutput, self).__init__()
         self.basepath = os.getcwd()
 
-    def add_options(self, parser, env):
+    def add_options(self, parser, env=None):
         super(NoseMachineReadableOutput, self).add_options(parser, env)
         parser.add_option("--machine-output", action="store_true",
-                          dest="machine_output",
-                          default=False,
-                          help="Reports test results in easily parsable format.")
-
-    def configure(self, options, conf):
-        super(NoseMachineReadableOutput, self).configure(options, conf)
-        self.enabled = options.machine_output
-
-    def addSkip(self, test):
-        pass
-
-    def addDeprecated(self, test):
-        pass
+                          dest="machine_output", default=False,
+                          help="Reports test results in parsable format.")
 
     def addError(self, test, err):
-        self.addFormatted('error', err)
+        self.add_formatted('error', err)
 
-    def addFormatted(self, etype, err):
+    def addFailure(self, test, err):
+        self.add_formatted('fail', err)
+
+    def setOutputStream(self, stream):
+        self.stream = stream
+        return DummyStream()
+
+    def add_formatted(self, etype, err):
         exctype, value, tb = err
         fulltb = traceback.extract_tb(tb)
 
@@ -72,12 +67,12 @@ class NoseMachineReadableOutput(Plugin):
 
         lines = traceback.format_exception_only(exctype, value)
         lines = [line.strip('\n') for line in lines]
-        msg0 = lines[0]
+        msg = lines[0]
 
         fname = self.format_testfname(fname)
         prefix = "%s:%d" % (fname, lineno)
         self.stream.writeln("%s: In %s" % (fname, funname))
-        self.stream.writeln("%s: %s: %s" % (prefix, etype, msg0))
+        self.stream.writeln("%s: %s: %s" % (prefix, etype, msg))
 
         if len(lines) > 1:
             pad = ' '*(len(etype)+1)
@@ -89,10 +84,3 @@ class NoseMachineReadableOutput(Plugin):
             return fname[len(self.basepath)+1:]
 
         return fname
-
-    def addFailure(self, test, err):
-        self.addFormatted('fail', err)
-
-    def setOutputStream(self, stream):
-        self.stream = stream
-        return dummystream()
