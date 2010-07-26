@@ -28,10 +28,6 @@ class NoseMachineReadableOutput(Plugin):
 
     name = 'machineout'
 
-    doctest_failure_re = re.compile(
-            'File "([^"]+)", line (\d+), in ([^\n]+)\n(.+)',
-            re.DOTALL)
-
     def __init__(self):
         super(NoseMachineReadableOutput, self).__init__()
         self.basepath = os.getcwd()
@@ -69,7 +65,7 @@ class NoseMachineReadableOutput(Plugin):
         lines = [line.strip('\n') for line in lines]
         msg = lines[0]
 
-        fname = self.format_testfname(fname)
+        fname = self._format_testfname(fname)
         prefix = "%s:%d" % (fname, lineno)
         self.stream.writeln("%s: In %s" % (fname, funname))
         self.stream.writeln("%s: %s: %s" % (prefix, etype, msg))
@@ -79,7 +75,7 @@ class NoseMachineReadableOutput(Plugin):
             for line in lines[1:]:
                 self.stream.writeln("%s: %s %s" % (prefix, pad, line))
 
-    def format_testfname(self, fname):
+    def _format_testfname(self, fname):
         if fname.startswith(self.basepath):
             return fname[len(self.basepath)+1:]
 
