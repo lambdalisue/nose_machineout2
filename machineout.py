@@ -75,7 +75,16 @@ class NoseMachineReadableOutput(Plugin):
     def addFormatted(self, etype, err):
         exctype, value, tb = err
         fulltb = traceback.extract_tb(tb)
-        fname, lineno, funname, msg = fulltb[-1]
+
+        fallback = fulltb[-1]
+        try:
+            while True:
+                fname, lineno, funname, msg = fulltb.pop()
+                if fname.startswith(self.basepath):
+                    break
+        except IndexError:
+            fname, lineno, funname, msg = fallback
+
         # explicit support for doctests is needed
         if is_doctest_traceback(fname):
             # doctest traceback includes pre-formatted error message
