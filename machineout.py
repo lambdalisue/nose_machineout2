@@ -3,7 +3,6 @@ Formats nose output into format easily parsable by machine.
 It is intended to be use to integrate nose with your IDE such as Vim.
 """
 
-import re
 import os
 import traceback
 from nose.plugins import Plugin
@@ -71,12 +70,12 @@ class NoseMachineReadableOutput(Plugin):
         self.stream.writeln("%s: %s: %s" % (prefix, etype, msg))
 
         if len(lines) > 1:
-            pad = ' '*(len(etype)+1)
+            pad = ' ' * (len(etype) + 1)
             for line in lines[1:]:
                 self.stream.writeln("%s: %s %s" % (prefix, pad, line))
 
     def _format_testfname(self, fname):
         if fname.startswith(self.basepath):
-            return fname[len(self.basepath)+1:]
+            return fname[len(self.basepath) + 1:]
 
         return fname
