@@ -60,7 +60,6 @@ class NoseMachineReadableOutput(Plugin):
 
         fname = self._format_testfname(fname)
         prefix = "%s:%d" % (fname, lineno)
-        self.stream.writeln("%s: In %s" % (fname, funname))
         self.stream.writeln("%s: %s: %s" % (prefix, etype, msg))
 
         if len(lines) > 1:
