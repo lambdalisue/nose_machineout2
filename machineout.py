@@ -31,12 +31,6 @@ class NoseMachineReadableOutput(Plugin):
         super(NoseMachineReadableOutput, self).__init__()
         self.basepath = os.getcwd()
 
-    def add_options(self, parser, env=None):
-        super(NoseMachineReadableOutput, self).add_options(parser, env)
-        parser.add_option("--machine-output", action="store_true",
-                          dest="machine_output", default=False,
-                          help="Reports test results in parsable format.")
-
     def addError(self, test, err):
         self.add_formatted('error', err)
 
