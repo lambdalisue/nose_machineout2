@@ -49,7 +49,12 @@ class NoseMachineReadableOutput(Plugin):
         try:
             while True:
                 fname, lineno, funname, msg = fulltb.pop()
-                if fname.startswith(self.basepath):
+
+                # The check for the `assert' prefix allows the user to extend
+                # unittest.TestCase with custom assert-methods, while
+                # machineout still returns the most useful error line number.
+                if fname.startswith(self.basepath) \
+                        and not funname.startswith('assert'):
                     break
         except IndexError:
             fname, lineno, funname, msg = fallback
