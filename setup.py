@@ -11,7 +11,7 @@ from setuptools import setup
 setup(
     name="nose_machineout",
     version="0.2",
-    description=__doc__,
+    description=__doc__.replace('\n', ' ').strip(),
     author="Mike Crute",
     author_email="mcrute@gmail.com",
     url="http://nose-machineout.googlecode.com",
