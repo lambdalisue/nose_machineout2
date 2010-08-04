@@ -48,7 +48,8 @@ class NoseMachineReadableOutput(Plugin):
 
         """
         fname, _, funname, _ = frame
-        score = 0
+        score = 0.0
+        max_score = 7.0  # update this when new conditions are added
 
         # Being in the project directory means it's one of our own files
         if fname.startswith(self.basepath):
@@ -63,7 +64,7 @@ class NoseMachineReadableOutput(Plugin):
         # machineout still returns the most useful error line number.
         if not funname.startswith('assert'):
             score += 1
-        return score
+        return score / max_score
 
     def _selectBestStackFrame(self, traceback):
         best_score = 0
@@ -73,6 +74,10 @@ class NoseMachineReadableOutput(Plugin):
             if curr_score > best_score:
                 best = frame
                 best_score = curr_score
+
+                # Terminate the walk as soon as possible
+                if best_score >= 1:
+                    break
         return best
 
     def add_formatted(self, etype, err):
