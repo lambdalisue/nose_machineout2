@@ -41,23 +41,44 @@ class NoseMachineReadableOutput(Plugin):
         self.stream = stream
         return DummyStream()
 
+    def _calcScore(self, frame):
+        """Calculates a score for this stack frame, so that can be used as a
+        quality indicator to compare to other stack frames in selecting the
+        most developer-friendly one to show in one-line output.
+
+        """
+        fname, _, funname, _ = frame
+        score = 0
+
+        # Being in the project directory means it's one of our own files
+        if fname.startswith(self.basepath):
+            score += 4
+
+        # Being one of our tests means it's a better match
+        if os.path.basename(fname).find('test') >= 0:
+            score += 2
+
+        # The check for the `assert' prefix allows the user to extend
+        # unittest.TestCase with custom assert-methods, while
+        # machineout still returns the most useful error line number.
+        if not funname.startswith('assert'):
+            score += 1
+        return score
+
+    def _selectBestStackFrame(self, traceback):
+        best_score = 0
+        best = traceback[-1]   # fallback value
+        for frame in traceback:
+            curr_score = self._calcScore(frame)
+            if curr_score > best_score:
+                best = frame
+                best_score = curr_score
+        return best
+
     def add_formatted(self, etype, err):
         exctype, value, tb = err
         fulltb = traceback.extract_tb(tb)
-
-        fallback = fulltb[-1]
-        try:
-            while True:
-                fname, lineno, funname, msg = fulltb.pop()
-
-                # The check for the `assert' prefix allows the user to extend
-                # unittest.TestCase with custom assert-methods, while
-                # machineout still returns the most useful error line number.
-                if fname.startswith(self.basepath) \
-                        and not funname.startswith('assert'):
-                    break
-        except IndexError:
-            fname, lineno, funname, msg = fallback
+        fname, lineno, funname, msg = self._selectBestStackFrame(fulltb)
 
         lines = traceback.format_exception_only(exctype, value)
         lines = [line.strip('\n') for line in lines]
