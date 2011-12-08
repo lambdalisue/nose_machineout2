@@ -2,11 +2,10 @@
 Formats nose output into format easily parsable by machine.
 It is intended to be use to integrate nose with your IDE such as Vim.
 """
-
 import os
+import re
 import traceback
 from nose.plugins import Plugin
-
 
 class DummyStream:
 
@@ -19,6 +18,9 @@ class DummyStream:
     def flush(self):
         pass
 
+doctest_value_pattern = re.compile(
+    r"""File "([^"]*)", line (\d*), in (.*)\nFailed example:\n"""
+    """\s*(.*)\nExpected:\n\s*(.*)\nGot:\n\s*(.*)""")
 
 class NoseMachineReadableOutput(Plugin):
     """
@@ -82,12 +84,20 @@ class NoseMachineReadableOutput(Plugin):
 
     def add_formatted(self, etype, err):
         exctype, value, tb = err
-        fulltb = traceback.extract_tb(tb)
-        fname, lineno, funname, msg = self._selectBestStackFrame(fulltb)
+        if (isinstance(value, basestring) and 
+                value.startswith(u'Failed doctest test')):
+            m = doctest_value_pattern.search(value)
+            fname, lineno, funname, example, expected, got = m.groups()
+            lineno = int(lineno)
+            lines = []
+            msg = "[Doctest] %s should be %s but got %s" % (example, expected, got)
+        else:
+            fulltb = traceback.extract_tb(tb)
+            fname, lineno, funname, msg = self._selectBestStackFrame(fulltb)
 
-        lines = traceback.format_exception_only(exctype, value)
-        lines = [line.strip('\n') for line in lines]
-        msg = lines[0]
+            lines = traceback.format_exception_only(exctype, value)
+            lines = [line.strip('\n') for line in lines]
+            msg = lines[0]
 
         fname = self._format_testfname(fname)
         prefix = "%s:%d" % (fname, lineno)
