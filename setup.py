@@ -14,8 +14,6 @@ setup(
     description=__doc__.replace('\n', ' ').strip(),
     author="Mike Crute",
     author_email="mcrute@gmail.com",
-    contributer="Alisue",
-    contributer_email="lambdalisue@hashnote.net",
     url="http://nose-machineout.googlecode.com",
     install_requires = [
         "nose>=0.10",
