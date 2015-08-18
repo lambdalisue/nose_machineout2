@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 
 NAME = 'nose_machineout2'
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 
 
 def read(filename):
